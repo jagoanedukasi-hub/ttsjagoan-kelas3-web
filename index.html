@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>TTS Jagoan Pancasila</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c1:#ff4757;--c2:#ff6348;--c3:#ffa502;--c4:#2ed573;--c5:#1e90ff;
+  --c6:#a29bfe;--c7:#fd79a8;--c8:#00cec9;
+  --bg:#fff8ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;min-height:100vh}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  padding:14px;
+  background-image:
+    radial-gradient(ellipse at 15% 10%,rgba(255,71,87,.10) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 90%,rgba(30,144,255,.10) 0%,transparent 55%),
+    radial-gradient(ellipse at 50% 50%,rgba(46,213,115,.07) 0%,transparent 60%);
+}
+
+/* ── HEADER ── */
+.hdr{text-align:center;margin-bottom:14px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1)}
+.hdr-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,var(--c1),var(--c2));
+  color:#fff;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 14px;border-radius:20px;margin-bottom:8px;
+  box-shadow:0 3px 10px rgba(255,71,87,.4);
+}
+h1{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(24px,7vw,42px);
+  line-height:1.1;
+  background:linear-gradient(135deg,#ff4757 0%,#ff6348 25%,#ffa502 50%,#2ed573 75%,#1e90ff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:hueShift 5s linear infinite;
+  filter:drop-shadow(0 2px 0 rgba(0,0,0,.08));
+}
+@keyframes hueShift{0%,100%{filter:drop-shadow(0 2px 0 rgba(255,71,87,.25)) hue-rotate(0deg)}50%{filter:drop-shadow(0 2px 0 rgba(30,144,255,.25)) hue-rotate(30deg)}}
+.emoji-row{font-size:22px;margin-top:6px;animation:wiggle 2s ease-in-out infinite}
+@keyframes wiggle{0%,100%{letter-spacing:6px}50%{letter-spacing:14px}}
+
+/* ── TOP BAR ── */
+.top-bar{display:flex;gap:10px;margin-bottom:12px;align-items:stretch;flex-wrap:wrap}
+.nama-wrap{
+  flex:1;min-width:180px;display:flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,#e8f4fd,#e6fff5);
+  border:2px solid #90caf9;border-radius:14px;padding:10px 14px;
+}
+.nama-wrap label{font-size:12px;font-weight:900;color:#1565c0;white-space:nowrap}
+.nama-wrap input{
+  flex:1;border:none;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:14px;font-weight:800;color:#0d47a1;outline:none;
+  border-bottom:2px dashed #90caf9;min-width:0;
+}
+.nama-wrap input::placeholder{color:#bbdefb;font-weight:600}
+
+.skor-wrap{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#ffeaa7,#fdcb6e);
+  border:2px solid #f9ca24;border-radius:14px;padding:10px 18px;
+  box-shadow:0 3px 14px rgba(253,203,110,.45);min-width:90px;
+}
+.skor-lbl{font-size:9px;font-weight:900;color:#6d4c41;letter-spacing:1.5px;text-transform:uppercase}
+.skor-num{font-family:'Fredoka One',cursive;font-size:30px;color:#4e342e;line-height:1;transition:all .3s}
+.skor-num.bump{animation:skorBump .4s ease}
+@keyframes skorBump{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+
+/* ── PETUNJUK ── */
+.petunjuk{
+  background:linear-gradient(135deg,#f3e5f5,#e8eaf6);
+  border:2px dashed #ce93d8;border-radius:12px;
+  padding:8px 14px;text-align:center;font-size:11px;font-weight:800;color:#6a1b9a;
+  margin-bottom:12px;
+}
+.petunjuk span{margin:0 5px}
+
+/* ── LEGEND ── */
+.legend{display:flex;gap:10px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:800;color:#555}
+.leg-box{width:16px;height:16px;border-radius:4px;border:2px solid}
+.leg-across .leg-box{background:#fff9c4;border-color:#f9a825}
+.leg-down .leg-box{background:#e3f2fd;border-color:#1565c0}
+
+/* ── GRID ── */
+.grid-wrap{
+  background:#fff;border-radius:18px;padding:14px;
+  box-shadow:0 4px 24px rgba(0,0,0,.09);
+  border:3px solid #f0f0f0;overflow-x:auto;
+  margin-bottom:14px;display:flex;justify-content:center;
+}
+.tts-grid{display:inline-grid;gap:3px}
+
+.cell{width:36px;height:36px;border-radius:6px;position:relative;display:flex;align-items:center;justify-content:center}
+@media(max-width:390px){.cell{width:29px;height:29px;border-radius:5px}}
+.cell.empty{background:transparent}
+.cell.active{background:#fafafa;border:2px solid #dde3ee;transition:transform .12s,border-color .12s,background .12s;cursor:pointer}
+.cell.active:hover{transform:scale(1.08);border-color:#90caf9}
+.cell.hl-across{background:#fffde7;border-color:#f9a825;box-shadow:0 0 0 2px rgba(249,168,37,.25)}
+.cell.hl-down{background:#e3f2fd;border-color:#1565c0;box-shadow:0 0 0 2px rgba(21,101,192,.20)}
+.cell.correct{background:linear-gradient(135deg,#b9f6ca,#69f0ae)!important;border-color:#00c853!important;animation:correctPop .4s cubic-bezier(.34,1.56,.64,1)}
+.cell.wrong{background:linear-gradient(135deg,#ffcdd2,#ef9a9a)!important;border-color:#e53935!important;animation:wrongShake .35s ease}
+@keyframes correctPop{0%{transform:scale(1)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes wrongShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+.num-badge{position:absolute;top:2px;left:3px;font-size:7.5px;font-weight:900;color:#bbb;pointer-events:none;font-family:'Fredoka One',cursive}
+.cell input{
+  width:100%;height:100%;border:none;background:transparent;
+  text-align:center;font-size:15px;font-weight:900;text-transform:uppercase;
+  color:#1a237e;font-family:'Fredoka One',cursive;
+  outline:none;caret-color:transparent;cursor:pointer;
+}
+
+/* ── TOMBOL ── */
+.btns{display:flex;gap:10px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
+.btn{
+  padding:11px 26px;border-radius:12px;border:none;
+  font-size:14px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;
+  transition:transform .15s,box-shadow .15s;letter-spacing:.3px;
+  position:relative;overflow:hidden;
+}
+.btn:active{transform:scale(.95)!important}
+.btn-check{
+  background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;
+  box-shadow:0 4px 16px rgba(0,184,148,.4);
+}
+.btn-check:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,184,148,.5)}
+.btn-reset{
+  background:linear-gradient(135deg,#636e72,#2d3436);color:#fff;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
+.btn-reset:hover{transform:translateY(-2px)}
+
+/* ── HASIL ── */
+.hasil{border-radius:16px;margin-bottom:14px;display:none;overflow:hidden}
+.hasil.show{display:block;animation:popIn .45s cubic-bezier(.34,1.56,.64,1)}
+.hasil-inner{padding:18px 20px;text-align:center}
+.hasil.ok .hasil-inner{background:linear-gradient(135deg,#c8f7c5,#a8edc0);border:3px solid #27ae60}
+.hasil.lumayan .hasil-inner{background:linear-gradient(135deg,#ffeaa7,#fdcb6e);border:3px solid #f39c12}
+.hasil.coba .hasil-inner{background:linear-gradient(135deg,#ffd6e0,#ffacc7);border:3px solid #e84393}
+.hasil-emo{font-size:44px;display:block;animation:bounce 1.2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-10px) rotate(5deg)}}
+.hasil-judul{font-family:'Fredoka One',cursive;font-size:20px;color:#2d3436;margin:6px 0 3px}
+.hasil-sub{font-size:12px;font-weight:800;color:#636e72}
+.skor-bar-bg{margin-top:12px;height:12px;border-radius:20px;background:rgba(0,0,0,.12);overflow:hidden}
+.skor-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#2ed573,#1e90ff);transition:width .9s cubic-bezier(.25,1,.5,1)}
+
+/* ── SOAL ── */
+.soal-wrap{
+  background:#fff;border-radius:18px;padding:16px;
+  box-shadow:0 4px 24px rgba(0,0,0,.09);border:3px solid #f0f0f0;
+  margin-bottom:14px;
+}
+.soal-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:480px){.soal-cols{grid-template-columns:1fr}}
+.soal-grp h3{
+  font-family:'Fredoka One',cursive;font-size:14px;
+  padding:6px 12px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;
+  margin-bottom:8px;
+}
+.soal-grp.mendatar h3{background:linear-gradient(135deg,#fffde7,#fff9c4);color:#f57f17;border:1.5px solid #f9a825}
+.soal-grp.menurun h3{background:linear-gradient(135deg,#e3f2fd,#bbdefb);color:#0d47a1;border:1.5px solid #42a5f5}
+.q-item{
+  display:flex;gap:6px;align-items:flex-start;
+  padding:5px 8px;border-radius:8px;font-size:11.5px;font-weight:700;color:#37474f;
+  cursor:pointer;transition:all .15s;border:1.5px solid transparent;margin-bottom:3px;
+}
+.q-item:hover{transform:translateX(4px)}
+.mendatar .q-item:hover{background:#fffde7;border-color:#f9a825}
+.menurun .q-item:hover{background:#e3f2fd;border-color:#42a5f5}
+.q-item.aq-across{background:#fff9c4;border-color:#f9a825;color:#e65100}
+.q-item.aq-down{background:#e3f2fd;border-color:#1565c0;color:#0d47a1}
+.q-num{font-family:'Fredoka One',cursive;font-size:13px;min-width:22px}
+.mendatar .q-num{color:#f9a825}
+.menurun .q-num{color:#1e90ff}
+.q-item.aq-across .q-num{color:#e65100}
+.q-item.aq-down .q-num{color:#0d47a1}
+
+/* ── FOOTER ── */
+footer{text-align:center;font-size:11px;color:#b0bec5;font-weight:800;padding-bottom:8px}
+
+/* ── UTILS ── */
+@keyframes popIn{0%{transform:scale(.75);opacity:0}60%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+.confetti{position:fixed;top:-12px;pointer-events:none;z-index:9999;border-radius:3px;animation:cfFall linear forwards}
+@keyframes cfFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(800deg);opacity:0}}
+.float-deco{position:fixed;pointer-events:none;z-index:0;opacity:.13;font-size:22px;animation:floatRise linear infinite}
+@keyframes floatRise{0%{transform:translateY(100vh) rotate(0);opacity:.15}100%{transform:translateY(-12vh) rotate(360deg);opacity:0}}
+</style>
+</head>
+<body>
+
+<!-- floating deco -->
+<div id="decos" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden"></div>
+
+<div style="position:relative;z-index:1;max-width:720px;margin:0 auto">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-chip">🏆 Seru · Edukatif · Pancasila 🏆</div>
+  <h1>TTS JAGOAN<br>PANCASILA</h1>
+  <div class="emoji-row">🌟 ⭐ 🌟</div>
+</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="nama-wrap">
+    <label>🧒 Nama:</label>
+    <input type="text" id="nama" placeholder="Tulis namamu!" autocomplete="off" maxlength="30">
+  </div>
+  <div class="skor-wrap">
+    <div class="skor-lbl">⚡ Skor</div>
+    <div class="skor-num" id="skor-num">0</div>
+  </div>
+</div>
+
+<!-- PETUNJUK -->
+<div class="petunjuk">
+  <span>👆 Ketuk kotak</span>•<span>✏️ Ketik huruf</span>•<span>→ kuning = mendatar</span>•<span>↓ biru = menurun</span>•<span>🏆 Raih 100!</span>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="leg leg-across"><div class="leg-box"></div> Mendatar</div>
+  <div class="leg leg-down"><div class="leg-box"></div> Menurun</div>
+</div>
+
+<!-- GRID -->
+<div class="grid-wrap">
+  <div class="tts-grid" id="grid"></div>
+</div>
+
+<!-- HASIL -->
+<div class="hasil" id="hasil">
+  <div class="hasil-inner">
+    <span class="hasil-emo" id="hasil-emo">🎉</span>
+    <div class="hasil-judul" id="hasil-judul"></div>
+    <div class="hasil-sub" id="hasil-sub"></div>
+    <div class="skor-bar-bg"><div class="skor-bar-fill" id="skor-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- TOMBOL -->
+<div class="btns">
+  <button class="btn btn-check" onclick="periksa()">✔ Periksa Jawaban</button>
+  <button class="btn btn-reset" onclick="resetAll()">↺ Mulai Lagi</button>
+</div>
+
+<!-- SOAL -->
+<div class="soal-wrap">
+  <div class="soal-cols">
+    <div class="soal-grp mendatar">
+      <h3>→ Mendatar</h3>
+      <div id="soal-m"></div>
+    </div>
+    <div class="soal-grp menurun">
+      <h3>↓ Menurun</h3>
+      <div id="soal-n"></div>
+    </div>
+  </div>
+</div>
+
+<footer>🌈 Ayo jadi Jagoan Pancasila! Semangat belajar! 🌈</footer>
+</div>
+
+<script>
+/*
+LAYOUT TERVERIFIKASI (9 baris × 11 kolom) — sesuai gambar:
+
+         c0  c1  c2  c3  c4  c5  c6  c7  c8  c9  c10
+r0:      M   .   .   .   .   E   M   P   A   T   .      EMPAT mendatar r0,c5  | MEMBANTU menurun c0 | PERSATUAN menurun c7
+r1:      E   .   .   .   R   .   .   E   .   .   .      RANTAI menurun c4
+r2:      M   U   S   Y   A   W   A   R   A   H   .      MUSYAWARAH mendatar r2,c0
+r3:      B   .   .   .   N   .   .   S   D   .   .
+r4:      A   .   S   A   T   U   .   A   I   .   .      SATU mendatar r4,c2  | ADIL menurun c8
+r5:      N   .   .   .   A   .   .   T   L   .   .
+r6:      T   I   G   A   I   .   R   U   K   U   N      TIGA mendatar r6,c0  | RUKUN mendatar r6,c6
+r7:      U   .   .   .   .   .   .   A   .   .   .
+r8:      .   .   B   I   N   T   A   N   G   .   .      BINTANG mendatar r8,c2
+
+INTERSECTIONS:
+ MEMBANTU[2]=M  ←→ MUSYAWARAH[0]=M  (r2,c0) ✓
+ MEMBANTU[6]=T  ←→ TIGA[0]=T        (r6,c0) ✓
+ RANTAI[1]=A    ←→ MUSYAWARAH[4]=A  (r2,c4) ✓
+ RANTAI[3]=T    ←→ SATU[2]=T        (r4,c4) ✓
+ ADIL[0]=A      ←→ MUSYAWARAH[8]=A  (r2,c8) ✓
+ PERSATUAN[0]=P ←→ EMPAT[2]=P       (r0,c7) ✓
+ PERSATUAN[2]=R ←→ MUSYAWARAH[7]=R  (r2,c7) ✓
+ PERSATUAN[4]=A ←→ (free)           (r4,c7) ✓
+ PERSATUAN[6]=U ←→ RUKUN[1]=U       (r6,c7) ✓
+ PERSATUAN[8]=N ←→ BINTANG[5]=N     (r8,c7) ✓
+*/
+
+const ROWS=9, COLS=11;
+
+// num → {word, dir, row, col, soal}
+const KATA={
+  // ── MENDATAR ──
+  1:{word:"EMPAT",    dir:"across",row:0,col:5,
+     soal:"Pemilihan ketua kelas adalah penerapan sila ke ..."},
+  3:{word:"MUSYAWARAH",dir:"across",row:2,col:0,
+     soal:"Keputusan bersama sebaiknya diambil dengan cara …"},
+  5:{word:"SATU",    dir:"across",row:4,col:2,
+     soal:"Kegiatan berdoa sebelum belajar mencerminkan pengamalan sila ke..."},
+  7:{word:"TIGA",    dir:"across",row:6,col:0,
+     soal:"Membantu ibu membersihkan rumah adalah contoh penerapan sila ke ..."},
+  9:{word:"RUKUN",   dir:"across",row:6,col:6,
+     soal:"Kita harus hidup … agar tidak terjadi perpecahan"},
+  11:{word:"BINTANG", dir:"across",row:8,col:2,
+     soal:"Lambang sila pertama adalah …"},
+  // ── MENURUN ──
+  2:{word:"MEMBANTU",  dir:"down",row:0,col:0,
+     soal:"Jika ada teman kesulitan kita harus saling ..."},
+  4:{word:"RANTAI",    dir:"down",row:1,col:4,
+     soal:"Sila ke-2 Pancasila dilambangkan dengan"},
+  6:{word:"ADIL",      dir:"down",row:2,col:8,
+     soal:"Sila ke-5 bermakna setiap warga negara berhak mendapat perlakuan yang ..."},
+  8:{word:"PERSATUAN", dir:"down",row:0,col:7,
+     soal:"Sila ketiga mengajarkan kita menjaga … bangsa"},
+};
+
+let cellMap={}, wordCells={}, activeNum=null, activeDir=null;
+
+/* ── BUILD MAP ── */
+function buildMap(){
+  Object.entries(KATA).forEach(([n,{word,dir,row,col}])=>{
+    wordCells[n]=[];
+    for(let i=0;i<word.length;i++){
+      const r=dir==="across"?row:row+i;
+      const c=dir==="across"?col+i:col;
+      const k=r+","+c;
+      if(!cellMap[k])cellMap[k]={nums:[],ans:{}};
+      cellMap[k].nums.push({n:+n,dir,pos:i});
+      cellMap[k].ans[dir]=word[i];
+      wordCells[n].push(k);
+    }
+  });
+}
+
+/* ── RENDER GRID ── */
+function renderGrid(){
+  const g=document.getElementById("grid");
+  g.style.gridTemplateColumns=`repeat(${COLS},36px)`;
+  g.style.gridTemplateRows=`repeat(${ROWS},36px)`;
+  g.innerHTML="";
+  for(let r=0;r<ROWS;r++){
+    for(let c=0;c<COLS;c++){
+      const k=r+","+c;
+      const div=document.createElement("div");
+      if(!cellMap[k]){div.className="cell empty";g.appendChild(div);continue;}
+      div.className="cell active";div.id="C"+r+"_"+c;
+      // number badge (smallest num that starts here)
+      const starts=cellMap[k].nums.filter(x=>x.pos===0).sort((a,b)=>a.n-b.n);
+      if(starts.length){
+        const b=document.createElement("span");
+        b.className="num-badge";b.textContent=starts[0].n;div.appendChild(b);
+      }
+      const inp=document.createElement("input");
+      inp.type="text";inp.maxLength=1;inp.inputMode="text";
+      inp.dataset.k=k;inp.dataset.r=r;inp.dataset.c=c;
+      inp.addEventListener("focus",()=>onFocus(k));
+      inp.addEventListener("input",e=>onInput(e,r,c));
+      inp.addEventListener("keydown",e=>onKey(e,r,c));
+      div.appendChild(inp);
+      g.appendChild(div);
+    }
+  }
+}
+
+/* ── HIGHLIGHT ── */
+function clearHL(){
+  document.querySelectorAll(".cell.hl-across,.cell.hl-down")
+    .forEach(el=>{el.classList.remove("hl-across","hl-down");});
+}
+function onFocus(k){
+  clearHL();
+  const info=cellMap[k]; if(!info) return;
+  // pick direction: prefer same as last active; if cell only has one dir, use that
+  const dirs=info.nums.map(x=>x.dir);
+  let dir;
+  if(dirs.length===1){dir=dirs[0];}
+  else if(activeDir&&dirs.includes(activeDir)){dir=activeDir;}
+  else{dir=dirs[0];}
+  // find which num corresponds to this dir
+  const entry=info.nums.find(x=>x.dir===dir)||info.nums[0];
+  activeNum=entry.n; activeDir=entry.dir;
+  const hlClass=activeDir==="across"?"hl-across":"hl-down";
+  wordCells[activeNum].forEach(ck=>{
+    const [rr,cc]=ck.split(",").map(Number);
+    document.getElementById("C"+rr+"_"+cc)?.classList.add(hlClass);
+  });
+  // highlight soal
+  document.querySelectorAll(".q-item").forEach(el=>el.classList.remove("aq-across","aq-down"));
+  const qa=document.querySelector(`.q-item[data-n="${activeNum}"][data-d="${activeDir}"]`);
+  if(qa){qa.classList.add(activeDir==="across"?"aq-across":"aq-down");qa.scrollIntoView({block:"nearest"});}
+}
+
+/* ── INPUT ── */
+function onInput(e,r,c){
+  const v=e.target.value.toUpperCase().replace(/[^A-Z]/g,"");
+  e.target.value=v; if(v) advance(r,c,1);
+}
+function onKey(e,r,c){
+  if(e.key==="Backspace"){const i=inp(r,c);if(i&&!i.value)advance(r,c,-1);}
+  if(e.key==="ArrowRight")go(r,c+1);
+  if(e.key==="ArrowLeft") go(r,c-1);
+  if(e.key==="ArrowDown") go(r+1,c);
+  if(e.key==="ArrowUp")   go(r-1,c);
+}
+function advance(r,c,d){
+  if(activeDir==="across")go(r,c+d); else go(r+d,c);
+}
+function go(r,c){inp(r,c)?.focus();}
+function inp(r,c){return document.querySelector(`input[data-k="${r},${c}"]`);}
+
+/* ── RENDER SOAL ── */
+function renderSoal(){
+  const sm=document.getElementById("soal-m"),sn=document.getElementById("soal-n");
+  sm.innerHTML="";sn.innerHTML="";
+  Object.entries(KATA).sort((a,b)=>+a[0]-+b[0]).forEach(([n,{dir,soal}])=>{
+    const list=dir==="across"?sm:sn;
+    const d=document.createElement("div");
+    d.className="q-item";d.dataset.n=n;d.dataset.d=dir;
+    d.innerHTML=`<span class="q-num">${n}.</span><span>${soal}</span>`;
+    d.onclick=()=>{
+      activeNum=+n;activeDir=dir;
+      inp(...wordCells[n][0].split(",").map(Number))?.focus();
+    };
+    list.appendChild(d);
+  });
+}
+
+/* ── PERIKSA ── */
+function periksa(){
+  const nama=document.getElementById("nama").value.trim();
+  if(!nama){
+    document.getElementById("nama").style.animation="none";
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{document.getElementById("nama").style.animation="wrongShake .35s ease";});
+    });
+    document.getElementById("nama").focus(); return;
+  }
+  let benar=0,total=0;
+  Object.entries(KATA).forEach(([n,{word}])=>{
+    wordCells[n].forEach((k,i)=>{
+      const ip=document.querySelector(`input[data-k="${k}"]`);
+      const cell=document.getElementById("C"+k.replace(",","_"));
+      if(!ip||!cell)return;
+      total++;
+      cell.classList.remove("hl-across","hl-down");
+      if(ip.value.toUpperCase()===word[i]){
+        benar++;
+        cell.classList.remove("wrong");cell.classList.add("correct");
+      }else{
+        cell.classList.remove("correct");cell.classList.add("wrong");
+      }
+    });
+  });
+  const pct=Math.round(benar/total*100);
+  // update skor
+  const sn=document.getElementById("skor-num");
+  sn.textContent=pct;sn.classList.remove("bump");
+  void sn.offsetWidth;sn.classList.add("bump");
+  // show hasil
+  const h=document.getElementById("hasil");
+  let cls,emo,judul,sub;
+  if(pct===100){
+    cls="ok";emo="🏆";judul=`Luar Biasa, ${nama}! SEMPURNA!`;
+    sub="Semua jawaban benar! Kamu benar-benar Jagoan Pancasila! 🌟";
+    launchConfetti();
+  }else if(pct>=60){
+    cls="lumayan";emo="😊";judul=`Bagus, ${nama}! Skor ${benar}/${total} (${pct}%)`;
+    sub="Hampir sempurna! Perbaiki yang merah dan coba lagi ya! 💪";
+  }else{
+    cls="coba";emo="💡";judul=`${nama}, Skor: ${benar}/${total} (${pct}%)`;
+    sub="Jangan menyerah! Baca soalnya pelan-pelan dan coba lagi! 🌈";
+  }
+  h.className=`hasil show ${cls}`;
+  document.getElementById("hasil-emo").textContent=emo;
+  document.getElementById("hasil-judul").textContent=judul;
+  document.getElementById("hasil-sub").textContent=sub;
+  document.getElementById("skor-fill").style.width=pct+"%";
+  h.scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+/* ── RESET ── */
+function resetAll(){
+  document.querySelectorAll(".cell.active input").forEach(i=>i.value="");
+  document.querySelectorAll(".cell.active")
+    .forEach(el=>el.classList.remove("correct","wrong","hl-across","hl-down"));
+  document.getElementById("hasil").className="hasil";
+  document.getElementById("skor-num").textContent="0";
+  document.querySelectorAll(".q-item").forEach(el=>el.classList.remove("aq-across","aq-down"));
+  activeNum=null;activeDir=null;
+}
+
+/* ── CONFETTI ── */
+function launchConfetti(){
+  const COLORS=["#ff4757","#ffd32a","#2ed573","#1e90ff","#ff6348","#a29bfe","#fd79a8","#00cec9"];
+  for(let i=0;i<80;i++){
+    setTimeout(()=>{
+      const el=document.createElement("div");
+      el.className="confetti";
+      const sz=6+Math.random()*10;
+      el.style.cssText=`left:${Math.random()*100}vw;width:${sz}px;height:${sz}px;
+        background:${COLORS[~~(Math.random()*COLORS.length)]};
+        animation-duration:${1.8+Math.random()*2.5}s;
+        animation-delay:${Math.random()*.8}s;
+        border-radius:${Math.random()>0.5?sz+"px":"3px"};`;
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),5000);
+    },i*25);
+  }
+}
+
+/* ── FLOATING DECO ── */
+function initDeco(){
+  const wrap=document.getElementById("decos");
+  ["⭐","🌟","✨","💫","🎈","🎉","🏅","🌈"].forEach((e,i)=>{
+    const d=document.createElement("div");
+    d.className="float-deco";d.textContent=e;
+    d.style.cssText=`left:${10+i*12}%;animation-duration:${10+i*2}s;animation-delay:${i*1.5}s`;
+    wrap.appendChild(d);
+  });
+}
+
+/* ── INIT ── */
+buildMap(); renderGrid(); renderSoal(); initDeco();
+</script>
+</body>
+</html>
